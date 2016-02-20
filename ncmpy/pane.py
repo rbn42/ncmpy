@@ -9,7 +9,8 @@ import os
 import threading
 import time
 
-import lrc, ttplyrics
+import ncmpy.lrc as lrc
+import ncmpy.ttplyrics as ttplyrics
 
 from ncmpy.config import *
 from ncmpy.util import *
@@ -345,7 +346,7 @@ class StatusPane(BarPane):
         tm = self.status.get('time') or '0:0'
         elapsed, total = map(int, tm.split(':'))
         elapsed_mm, elapsed_ss, total_mm, total_ss = \
-                elapsed / 60, elapsed % 60, total / 60, total % 60
+                elapsed // 60, elapsed % 60, total // 60, total % 60
         return '[{0}:{1:02d} ~ {2}:{3:02d}]'.format(elapsed_mm, elapsed_ss, total_mm, total_ss)
 
     def update_win(self):
@@ -590,7 +591,8 @@ class QueuePane(CursedPane):
 
             self.pl_version = int(self.status['playlist'])
 
-        self.cur = self.status.has_key('song') and int(self.status['song']) or 0
+        # self.cur = self.status.has_key('song') and int(self.status['song']) or 0
+        self.cur = int(self.status.get('song', 0))
 
     def round1(self, c):
         if c == ord('j'):
@@ -748,7 +750,7 @@ class DatabasePane(CursedPane):
     def update_data(self):
         CursedPane.update_data(self)
 
-        if self.board.has_key('database-updated'):
+        if 'database-updated' in self.board:
             self.dir = ''
             self.items = self.list_items()
             self.board['msg'] = 'Database updated.'
@@ -785,7 +787,7 @@ class DatabasePane(CursedPane):
             self.items = self.list_items()
         elif c == ord('\n'):
             item = self.items[self.sel]
-            if item.has_key('directory'):
+            if 'directory' in item:
                 uri = item['directory']
                 if uri == '..':
                     oldroot = self.dir
@@ -799,7 +801,7 @@ class DatabasePane(CursedPane):
                     self.dir = uri
                     self.items = self.list_items()
 
-            elif item.has_key('file'):
+            elif 'file' in item:
                 uri = item['file']
                 songs = self.mpc.playlistfind('file', uri)
                 if songs:
@@ -808,7 +810,7 @@ class DatabasePane(CursedPane):
                     self.mpc.add(uri)
                     song = self.mpc.playlistfind('file', uri)[0]
                     self.mpc.playid(song['id'])
-            elif item.has_key('playlist'):
+            elif 'playlist' in item:
                 name = item['playlist']
                 try:
                     self.mpc.load(name)
@@ -818,7 +820,7 @@ class DatabasePane(CursedPane):
                     self.board['msg'] = 'Playlist {} loaded'.format(name)
         elif c == ord('a'):
             item = self.items[self.sel]
-            if item.has_key('directory'):
+            if 'directory' in item:
                 uri = item['directory']
             else:
                 uri = item['file']
@@ -828,7 +830,7 @@ class DatabasePane(CursedPane):
                 self.mpc.add(uri)
         elif c == ord('d'):
             item = self.items[self.sel]
-            if item.has_key('playlist'):
+            if 'playlist' in item:
                 name = item['playlist']
                 try:
                     self.mpc.rm(name)
@@ -844,7 +846,7 @@ class DatabasePane(CursedPane):
         elif c == ord(';'):
             # tell QUEUE we want to locate a song
             item = self.items[self.sel]
-            if item.has_key('file'):
+            if 'file' in item:
                 self.board['queue-locate'] = item.get('file')
             else:
                 self.board['msg'] = 'No song selected'
@@ -875,11 +877,11 @@ class DatabasePane(CursedPane):
         self.win.erase()
         for i in range(self.beg, min(self.beg + self.height, self.num)):
             item = self.items[i]
-            if item.has_key('directory'):
+            if 'directory' in item:
                 t, uri = 'directory', item['directory']
-            elif item.has_key('file'):
+            elif 'file' in item:
                 t, uri = 'file', item['file']
-            elif item.has_key('playlist'):
+            elif 'playlist' in item:
                 t, uri = 'playlist', item['playlist']
 
             if i == self.sel:
@@ -1056,7 +1058,7 @@ class LyricsPane(ScrollPane, threading.Thread):
                 lyrics_file = os.path.join(self._lyrics_dir, self._artist.replace('/', '_') + \
                         '-' + self._title.replace('/', '_') + '.lrc')
                 if os.path.isfile(lyrics_file):
-                    with open(lyrics_file, 'rt') as f:
+                    with open(lyrics_file, 'rt', encoding="utf-8") as f:
                         self._lyrics = f.read()
                     # inform round2: lyrics has been fetched
                     self._lyrics_state = 'local'
@@ -1326,7 +1328,7 @@ class ArtistAlbumPane(CursedPane):
                 self.board['msg'] = 'No song selected'
 
     def round2(self):
-        if self.board.has_key('database-updated'):
+        if 'database-updated' in self.board:
             self._type = 'artist'
             self.items = self.build()
 

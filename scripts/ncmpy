@@ -183,9 +183,11 @@ class Ncmpy():
                 elif c == curses.KEY_RIGHT:
                     self.elapsed = min(self.elapsed + 1, self.total)
                 elif c == curses.KEY_DOWN:
-                    self.elapsed = max(self.elapsed - max(self.total / 100, 1), 0)
+                    # self.elapsed = max(self.elapsed - max(self.total / 100, 1), 0)
+                    self.elapsed = max(self.elapsed - max(self.total // 100, 1), 0)
                 elif c == curses.KEY_UP:
-                    self.elapsed = min(self.elapsed + max(self.total / 100, 1), self.total)
+                    # self.elapsed = min(self.elapsed + max(self.total / 100, 1), self.total)
+                    self.elapsed = min(self.elapsed + max(self.total // 100, 1), self.total)
                 self.status['time'] = '{}:{}'.format(self.elapsed, self.total)
         else:
             if self.seek:
@@ -302,10 +304,10 @@ class Ncmpy():
             self.tpanename = 'Output'
 
     def round2(self):
-        if self.board.has_key('database-locate'):
+        if 'database-locate' in self.board:
             self.tpanename = 'Database'
 
-        if self.board.has_key('queue-locate'):
+        if 'queue-locate' in self.board:
             self.tpanename = 'Queue'
 
         for pane in self.plist:
@@ -336,7 +338,7 @@ class Ncmpy():
         Return Value: Events received in idle state.
         '''
 
-        self.mpc.send_noidle()
+        self.mpc.noidle() # send_noidle() is not available in python-mpd2
         self.idle = False
 
         try:

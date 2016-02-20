@@ -22,9 +22,13 @@
 import sys
 import locale
 import codecs
-import urllib2
 import random
 from xml.dom.minidom import parse, parseString
+
+try:
+  import urllib2
+except ImportError:
+  import urllib
 
 def CodeFunc(Id, data):
     length = len(data)
@@ -136,5 +140,5 @@ def fetch_lyrics(artist, title):
             return handle.read()
 
 if __name__ == '__main__':
-    print fetch_lyrics(sys.argv[1], sys.argv[2])
+    print(fetch_lyrics(sys.argv[1], sys.argv[2]))
 
