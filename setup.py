@@ -34,7 +34,10 @@ setup(
         'Topic :: Multimedia :: Sound/Audio :: Players',
         'Programming Language :: Python :: 2.7',
         ],
-    requires = ['curses', 'mpd'],
+    install_requires = [
+         #'curses',
+         'python-mpd2' # da niu vershion
+         ],
     packages=find_packages(),
     scripts=glob.glob('scripts/*'),
 )
