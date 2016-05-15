@@ -715,6 +715,8 @@ class QueuePane(CursedPane):
         for i in range(int(self.beg), int(min(self.beg + self.height, self.num))):
             item = self.queue[i]
             title = get_tag('title', item) or os.path.basename(item['file'])
+            album= get_tag('album', item) or ''
+            
             rating = item['rating']
             if 'time' in item:
                 tm = format_time(item['time'])
@@ -734,8 +736,20 @@ class QueuePane(CursedPane):
             if i == self.sel:
                 self.win.attron(curses.A_REVERSE)
             self.win.hline(int(i - self.beg), 0, ' ',int( self.width))
-            self.win.addnstr(int(i - self.beg), 0, title, int(self.width - 18))
-            self.win.addnstr(int(i - self.beg),int( self.width - 16), rating * '*', 5)
+            split0=0
+            split1=int((self.width-18)/2)
+            split2=int(self.width-18)
+            self.win.attron(curses.color_pair(2) | curses.A_BOLD)
+            self.win.addnstr(int(i - self.beg), split0+1, title, split1-1)
+            self.win.attroff(curses.color_pair(2) | curses.A_BOLD)
+            self.win.attron(curses.color_pair(3) | curses.A_BOLD)
+            try:    
+                self.win.addnstr(int(i - self.beg), split1+1, album, split2-1)
+            except:
+                pass
+            self.win.attroff(curses.color_pair(3) | curses.A_BOLD)
+
+#            self.win.addnstr(int(i - self.beg),int( self.width - 16), rating * '*', 5)
             self.win.insstr(int(i - self.beg), int(self.width )- len(tm), tm)
             if i == self.sel:
                 self.win.attroff(curses.A_REVERSE)
@@ -807,14 +821,15 @@ class DatabasePane(CursedPane):
             self.to_first()
         elif c == ord('G'):
             self.to_last()
-        elif c == ord('\''):
+        elif c == ord('\'') or c==curses.KEY_LEFT or c==ord('h'):
             oldroot = self.dir
             self.dir = os.path.dirname(self.dir)
-            self.items = self.list_items()
-            for i in range(len(self.items)):
-                if self.items[i].get('directory') == oldroot:
-                    self.locate(i)
-                    break
+            if not self.dir==oldroot:
+                self.items = self.list_items()
+                for i in range(len(self.items)):
+                    if self.items[i].get('directory') == oldroot:
+                        self.locate(i)
+                        break
         elif c == ord('"'):
             self.dir = ''
             self.items = self.list_items()
@@ -823,24 +838,36 @@ class DatabasePane(CursedPane):
             item = self.items[self.sel]
             from ncmpy.database import add2
             _list=add2(item,self.mpc)
-            #clear playlist
-            self.mpc.clear()
-            #TODO database add all
-            for item in _list:
-                if 'file' in item:
-                    self.mpc.add(item['file'])
-                elif 'playlist' in item:
-                    try:
-                        self.mpc.load(item['playlist'])
-                    except mpd.CommandError as e:
-                        self.board['msg'] = str(e).rsplit('} ')[1]
-                    else:
-                        #self.board['msg'] = 'Playlist {} loaded'.format(name)
-                        pass
-            #play next
-            #self.mpc.pause(1)
-            self.mpc.next()
-            self.mpc.play()#0)
+            if len(_list)>0:
+                self.mpc.clear()
+                for item in _list:
+                    if 'file' in item:
+                        self.mpc.add(item['file'])
+                    elif 'playlist' in item:
+                        try:
+                            self.mpc.load(item['playlist'])
+                        except mpd.CommandError as e:
+                            self.board['msg'] = str(e).rsplit('} ')[1]
+                        else:
+                            #self.board['msg'] = 'Playlist {} loaded'.format(name)
+                            pass
+                self.mpc.next()
+                self.mpc.play()
+        elif c==curses.KEY_RIGHT or c==curses.KEY_BACKSPACE or c==ord('l'):
+            item = self.items[self.sel]
+            if 'directory' in item:
+                uri = item['directory']
+                if uri == '..':
+                    oldroot = self.dir
+                    self.dir = os.path.dirname(self.dir)
+                    self.items = self.list_items()
+                    for i in range(len(self.items)):
+                        if self.items[i].get('directory') == oldroot:
+                            self.locate(i)
+                            break
+                else:
+                    self.dir = uri
+                    self.items = self.list_items()
         elif c == ord('\n'):
             item = self.items[self.sel]
             if 'directory' in item:

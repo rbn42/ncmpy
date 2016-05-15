@@ -33,7 +33,10 @@ def listall2(item,mpc,result=None):
         result=[]
     if 'directory' in item:
         try:
-            children=mpc.lsinfo(item['directory'])
+            uri=item['directory']
+            if uri=='..':
+                return []
+            children=mpc.lsinfo(uri)
         except:
             #可以强制加入utf8编码错误的文件，但是加入后，ncmpy的listview会出错，无法显示。
             children=mpc.listall(item['directory'])
