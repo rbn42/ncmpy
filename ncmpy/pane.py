@@ -230,7 +230,12 @@ class CursedPane(BlockPane):
                     elif self._type == 'song':
                         title = get_tag('title', item) or os.path.basename(item['file'])
 
-                if title.find(self.main.search) != -1:
+                for encoding in 'utf8','gbk','shift-jis','big5':
+                    try:
+                        searchkey=self.main.search.decode(encoding)
+                    except:
+                        continue
+                if title.find(searchkey) != -1:
                     has_match = True
                     if di == 1 and i <= self.sel:
                         self.board['msg'] = 'search hit BOTTOM, continuing at TOP'
@@ -729,7 +734,7 @@ class QueuePane(CursedPane):
                 self.win.attron(curses.A_BOLD)
             if i == self.sel:
                 self.win.attron(curses.A_REVERSE)
-            self.win.hline(i - self.beg, 0, ' ', self.width)
+            self.win.hline(int(i - self.beg), 0, ' ',int( self.width))
             self.win.addnstr(i - self.beg, 0, title, self.width - 18)
             self.win.addnstr(i - self.beg, self.width - 16, rating * '*', 5)
             self.win.insstr(i - self.beg, self.width - len(tm), tm)
