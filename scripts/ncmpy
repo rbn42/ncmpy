@@ -66,6 +66,7 @@ class Ncmpy():
         self.idle = False
         self.seek = False
         self.sync = True
+        self.last_resize=0
         self.elapsed = 0
         self.total = 0
         self.search = ''
@@ -409,6 +410,10 @@ class Ncmpy():
 
     def resize_win(self):
         '''Reset display. Called in SIGWINCH handler.'''
+
+        if time.time()-self.last_resize<5:
+            time.sleep(3)
+        self.last_resize=time.time()
 
         curses.endwin()
         self.stdscr.refresh()
