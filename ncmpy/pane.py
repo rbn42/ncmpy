@@ -804,33 +804,27 @@ class DatabasePane(CursedPane):
             self.dir = ''
             self.items = self.list_items()
         elif c==ord(' '):
+            #get list
+            item = self.items[self.sel]
+            from ncmpy.database import add2
+            _list=add2(item,self.mpc)
             #clear playlist
             self.mpc.clear()
             #TODO database add all
-            item = self.items[self.sel]
-            if 'directory' in item:
-                uri = item['directory']
-                from ncmpy.database import add2
-                add2(uri,self.mpc)
-                #self.mpc.add(uri)
-            elif 'file' in item:
-                uri = item['file']
-                self.mpc.add(uri)
-            elif 'playlist' in item:
-                uri = item['playlist']
-                try:
-                    self.mpc.load(uri)
-                except mpd.CommandError as e:
-                    self.board['msg'] = str(e).rsplit('} ')[1]
-                else:
-                    self.board['msg'] = 'Playlist {} loaded'.format(name)
-            else:
-                #unexpected
-                a=1/0
-
+            for item in _list:
+                if 'file' in item:
+                    self.mpc.add(item['file'])
+                elif 'playlist' in item:
+                    try:
+                        self.mpc.load(item['playlist'])
+                    except mpd.CommandError as e:
+                        self.board['msg'] = str(e).rsplit('} ')[1]
+                    else:
+                        #self.board['msg'] = 'Playlist {} loaded'.format(name)
+                        pass
             #play next
-            self.mpc.next()
             #self.mpc.pause(1)
+            self.mpc.next()
             self.mpc.play()#0)
         elif c == ord('\n'):
             item = self.items[self.sel]
@@ -938,8 +932,8 @@ class DatabasePane(CursedPane):
                 self.win.attron(curses.color_pair(1) | curses.A_BOLD)
             elif t == 'playlist':
                 self.win.attron(curses.color_pair(2) | curses.A_BOLD)
-            self.win.hline(i - self.beg, 0, ' ', self.width)
-            self.win.insstr(i - self.beg, 0, os.path.basename(uri))
+            self.win.hline(int(i - self.beg), 0, ' ', int(self.width))
+            self.win.insstr(int(i - self.beg), 0, os.path.basename(uri))
             if t == 'directory':
                 self.win.attroff(curses.color_pair(1) | curses.A_BOLD)
             elif t == 'playlist':
