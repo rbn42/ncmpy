@@ -214,12 +214,14 @@ class Ncmpy():
 
         # Playback control.
         elif c == ord(' '):
+            #TODO space key
             self.mpc.pause()
         elif c == ord('s'):
             self.mpc.stop()
         elif c == ord('<'):
             self.mpc.previous()
         elif c == ord('>'):
+            #TODO next
             self.mpc.next()
 
         # Mode control.

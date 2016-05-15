@@ -618,8 +618,10 @@ class QueuePane(CursedPane):
         elif c == ord('l'):
             self.locate(self.cur)
         elif c == ord('a'):
+            #TODO add all
             self.mpc.add('')
         elif c == ord('c'):
+            #TODO clear playlist
             self.mpc.clear()
             self.num = self.beg = self.sel = self.cur = 0
         elif c == ord('d'):
@@ -655,6 +657,7 @@ class QueuePane(CursedPane):
         elif c == ord('e'):
             self.mpc.shuffle()
         elif c == ord('\n'):
+            #TODO enter play
             self.mpc.playid(self.queue[self.sel]['id'])
         elif c in range(ord('1'), ord('5') + 1):
             if conf.enable_rating:
@@ -788,6 +791,7 @@ class DatabasePane(CursedPane):
             self.dir = ''
             self.items = self.list_items()
         elif c == ord('\n'):
+            #TODO database enter play 
             item = self.items[self.sel]
             if 'directory' in item:
                 uri = item['directory']
@@ -821,6 +825,7 @@ class DatabasePane(CursedPane):
                 else:
                     self.board['msg'] = 'Playlist {} loaded'.format(name)
         elif c == ord('a'):
+            #TODO database add all
             item = self.items[self.sel]
             if 'directory' in item:
                 uri = item['directory']
