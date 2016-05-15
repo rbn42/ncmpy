@@ -310,7 +310,7 @@ class ProgressPane(BarPane):
             if float(total)==0:#division by zero error occurs
                 total=1
             pos = int((float(elapsed) / float(total)) * (self.width - 1))
-            return '=' * pos + '0' + '-' * (self.width - pos - 1)
+            return '=' * pos + '>' + '-' * (self.width - pos - 1)
 
     def update_win(self):
         prog_str = self.build_prog_str()
@@ -341,6 +341,9 @@ class StatusPane(BarPane):
         state = self.status.get('state')
         song = self.currentsong
         title = song and (song.get('title') or os.path.basename(song.get('file'))) or ''
+        import sys
+        sys.stdout.write("\x1b]2;%s\x07" % title)
+        sys.stdout.flush()
         return '{} > {}'.format(self.state_name[state], title)
 
     def build_tm_str(self):
