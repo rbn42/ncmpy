@@ -343,7 +343,10 @@ class Ncmpy():
         Return Value: Events received in idle state.
         '''
 
-        self.mpc.noidle() # send_noidle() is not available in python-mpd2
+        try:
+            self.mpc.noidle() # send_noidle() is not available in python-mpd2
+        except:
+            pass
         self.idle = False
 
         try:

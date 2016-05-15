@@ -712,7 +712,18 @@ class QueuePane(CursedPane):
             item = self.queue[i]
             title = get_tag('title', item) or os.path.basename(item['file'])
             rating = item['rating']
-            tm = format_time(item['time'])
+            if 'time' in item:
+                tm = format_time(item['time'])
+            else:
+                tm='notime'
+          #  try:    
+          #      tm = format_time(item['time'])
+          #  except:
+          #      f=open('/dev/shm/1','w')
+          #      print(item)
+          #      f.write(str(item))
+          #      f.close()
+
 
             if i == self.cur:
                 self.win.attron(curses.A_BOLD)
