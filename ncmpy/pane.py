@@ -743,9 +743,11 @@ class QueuePane(CursedPane):
             split0=0
             split1=int((self.width-18)/2)
             split2=int(self.width-18)
+
             self.win.attron(curses.color_pair(2) | curses.A_BOLD)
-            self.win.addnstr(int(i - self.beg), split0+1, title, split1-1)
+            self.win.addnstr(int(i - self.beg), split0+0, title, split1-1)
             self.win.attroff(curses.color_pair(2) | curses.A_BOLD)
+
             self.win.attron(curses.color_pair(3) | curses.A_BOLD)
             try:    
                 self.win.addnstr(int(i - self.beg), split1+1, album, split2-1)
@@ -754,7 +756,7 @@ class QueuePane(CursedPane):
             self.win.attroff(curses.color_pair(3) | curses.A_BOLD)
 
 #            self.win.addnstr(int(i - self.beg),int( self.width - 16), rating * '*', 5)
-            self.win.insstr(int(i - self.beg), int(self.width )- len(tm), tm)
+            self.win.insstr(int(i - self.beg), int(self.width )- len(tm)-3,'  '+ tm)
             if i == self.sel:
                 self.win.attroff(curses.A_REVERSE)
             if i == self.cur:
