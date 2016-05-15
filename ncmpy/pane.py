@@ -718,7 +718,12 @@ class QueuePane(CursedPane):
         self.win.erase()
         album=None
         count_album=0
-        for i in range(int(self.beg), int(min(self.beg + self.height, self.num))):
+        _max=int(min(self.beg + self.height, self.num))
+        import math
+        num_width=1+int(math.log(_max,10))
+        num_format='%'+'%sd'%num_width
+
+        for i in range(int(self.beg), _max):
             item = self.queue[i]
             title = get_tag('title', item) or os.path.basename(item['file'])
             album= get_tag('album', item) 
@@ -735,24 +740,32 @@ class QueuePane(CursedPane):
             self.win.hline(int(i - self.beg), 0, ' ',int( self.width))
 
             width1=int((self.width-18)/2)
+            _row=int(i-self.beg)
             padding=0
 
-            self.win.attron(curses.color_pair(2) | curses.A_BOLD)
+            self.win.attron(curses.color_pair(4))
+            self.win.addstr(int(i - self.beg), 0,num_format%i)
+
+            self.win.attron(curses.color_pair(3))
             try:    
-                self.win.addnstr(int(i - self.beg), 0,title,len(title) )# width1-padding*2)
+                self.win.addstr(' '+title+' '*20) 
             except:
                 pass
-            self.win.attroff(curses.color_pair(2) | curses.A_BOLD)
 
-            self.win.attron(curses.color_pair(3) | curses.A_BOLD)
+            self.win.attron(curses.color_pair(5))
             try:    
-                self.win.addnstr(int(i - self.beg), width1+padding,album+' '*30,len(album)+30) # width1-padding)
+                self.win.addstr(_row, width1+padding,album+' '*20)#,len(album)+30) # width1-padding)
             except:
                 pass
-            self.win.attroff(curses.color_pair(3) | curses.A_BOLD)
 
-#            self.win.addnstr(int(i - self.beg),int( self.width - 16), rating * '*', 5)
-            self.win.insstr(int(i - self.beg), int(self.width )- len(tm)-3,'  '+ tm+' ')
+            self.win.attron(curses.color_pair(6))
+            try:    
+                self.win.addstr(_row,int(self.width)-len(tm)-3,' '+ tm+' '*20)
+            except:
+                pass
+            #,len(tm)+2)
+            self.win.attroff(curses.color_pair(6) | curses.A_BOLD)
+
             if i == self.sel:
                 self.win.attroff(curses.A_REVERSE)
             if i == self.cur:
@@ -973,15 +986,15 @@ class DatabasePane(CursedPane):
             if i == self.sel:
                 self.win.attron(curses.A_REVERSE)
             if t == 'directory':
-                self.win.attron(curses.color_pair(1) | curses.A_BOLD)
+                self.win.attron(curses.color_pair(5) | curses.A_BOLD)
             elif t == 'playlist':
-                self.win.attron(curses.color_pair(2) | curses.A_BOLD)
+                self.win.attron(curses.color_pair(3) | curses.A_BOLD)
             self.win.hline(int(i - self.beg), 0, ' ', int(self.width))
             self.win.insstr(int(i - self.beg), 0, os.path.basename(uri))
             if t == 'directory':
-                self.win.attroff(curses.color_pair(1) | curses.A_BOLD)
+                self.win.attroff(curses.color_pair(5) | curses.A_BOLD)
             elif t == 'playlist':
-                self.win.attroff(curses.color_pair(2) | curses.A_BOLD)
+                self.win.attroff(curses.color_pair(3) | curses.A_BOLD)
             if i == self.sel:
                 self.win.attroff(curses.A_REVERSE)
         self.win.noutrefresh()
@@ -1440,15 +1453,15 @@ class ArtistAlbumPane(CursedPane):
             if i == self.sel:
                 self.win.attron(curses.A_REVERSE)
             if self._type == 'artist':
-                self.win.attron(curses.color_pair(1) | curses.A_BOLD)
+                self.win.attron(curses.color_pair(3) | curses.A_BOLD)
             elif self._type == 'album':
-                self.win.attron(curses.color_pair(2) | curses.A_BOLD)
+                self.win.attron(curses.color_pair(4) | curses.A_BOLD)
             self.win.hline(i - self.beg, 0, ' ', self.width)
             self.win.insstr(i - self.beg, 0, val)
             if self._type == 'artist':
-                self.win.attroff(curses.color_pair(1) | curses.A_BOLD)
+                self.win.attroff(curses.color_pair(3) | curses.A_BOLD)
             elif self._type == 'album':
-                self.win.attroff(curses.color_pair(2) | curses.A_BOLD)
+                self.win.attroff(curses.color_pair(4) | curses.A_BOLD)
             if i == self.sel:
                 self.win.attroff(curses.A_REVERSE)
         self.win.noutrefresh()
