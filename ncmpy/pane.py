@@ -726,31 +726,22 @@ class QueuePane(CursedPane):
                 tm = format_time(item['time'])
             else:
                 tm='notime'
-          #  try:    
-          #      tm = format_time(item['time'])
-          #  except:
-          #      f=open('/dev/shm/1','w')
-          #      print(item)
-          #      f.write(str(item))
-          #      f.close()
-
 
             if i == self.cur:
                 self.win.attron(curses.A_BOLD)
             if i == self.sel:
                 self.win.attron(curses.A_REVERSE)
             self.win.hline(int(i - self.beg), 0, ' ',int( self.width))
-            split0=0
-            split1=int((self.width-18)/2)
-            split2=int(self.width-18)
+
+            width1=int((self.width-18)/2)
 
             self.win.attron(curses.color_pair(2) | curses.A_BOLD)
-            self.win.addnstr(int(i - self.beg), split0+0, title, split1-1)
+            self.win.addnstr(int(i - self.beg), 1, title, width1-2)
             self.win.attroff(curses.color_pair(2) | curses.A_BOLD)
 
             self.win.attron(curses.color_pair(3) | curses.A_BOLD)
             try:    
-                self.win.addnstr(int(i - self.beg), split1+1, album, split2-1)
+                self.win.addnstr(int(i - self.beg), width1+1, album, width1-2)
             except:
                 pass
             self.win.attroff(curses.color_pair(3) | curses.A_BOLD)
