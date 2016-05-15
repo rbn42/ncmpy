@@ -411,8 +411,9 @@ class Ncmpy():
     def resize_win(self):
         '''Reset display. Called in SIGWINCH handler.'''
 
+        #delay resizing
         if time.time()-self.last_resize<5:
-            time.sleep(3)
+            time.sleep(5)
         self.last_resize=time.time()
 
         curses.endwin()
