@@ -28,7 +28,7 @@ from xml.dom.minidom import parse, parseString
 try:
   import urllib2
 except ImportError:
-  import urllib
+  import urllib.request as urllib2
 
 def CodeFunc(Id, data):
     length = len(data)
@@ -93,7 +93,7 @@ def EncodeArtTit(str):
     rtn = ''
     str = str.encode('UTF-16')[2:]
     for i in range(len(str)):
-        rtn += '%02x' % ord(str[i])
+        rtn += '%02x' % ord(str[i:i+1]) 
 
     return rtn
 
@@ -101,8 +101,17 @@ def fetch_lyrics(artist, title):
     # fixed headers
     headers =  {'User-agent' : 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)'}
 
-    artist = artist.decode('UTF-8')
-    title = title.decode('UTF-8')
+    try:
+        #expects bytes?
+        artist = artist.decode('UTF-8')
+    except:
+        pass
+
+    try:
+        #expects bytes?
+        title = title.decode('UTF-8')
+    except:
+        pass
 
     try:
         url = 'http://ttlrcct2.qianqian.com/dll/lyricsvr.dll?sh?Artist={}&Title={}&Flags=0'.format(
