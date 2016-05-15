@@ -306,6 +306,8 @@ class ProgressPane(BarPane):
         else:
             tm = self.status.get('time')
             elapsed, total = tm.split(':')
+            if float(total)==0:#division by zero error occurs
+                total=1
             pos = int((float(elapsed) / float(total)) * (self.width - 1))
             return '=' * pos + '0' + '-' * (self.width - pos - 1)
 
