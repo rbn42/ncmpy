@@ -1242,7 +1242,10 @@ class ArtistAlbumPane(CursedPane):
         A view is rebuilt when self._type changes.'''
 
         if self._type == 'artist':
-            view = self.mpc.list('artist')
+            try:
+                view = self.mpc.list('artist')
+            except:
+                view="artist:unicode error"
         elif self._type == 'album':
             view = self._artist and self.mpc.list('album', self._artist) or []
         elif self._type == 'song':
