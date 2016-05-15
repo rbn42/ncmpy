@@ -364,7 +364,10 @@ class StatusPane(BarPane):
         tm_str = self.build_tm_str()
 
         self.win.erase()
+        
+        self.win.attron(curses.color_pair(2))
         self.win.insstr(0, 0, title_str)
+        self.win.attroff(curses.color_pair(2))
         self.win.insstr(0, self.width - len(tm_str), tm_str)
         self.win.noutrefresh()
 
