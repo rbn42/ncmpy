@@ -716,11 +716,12 @@ class QueuePane(CursedPane):
 
     def update_win(self):
         self.win.erase()
+        album=None
+        count_album=0
         for i in range(int(self.beg), int(min(self.beg + self.height, self.num))):
             item = self.queue[i]
             title = get_tag('title', item) or os.path.basename(item['file'])
-            album= get_tag('album', item) or ''
-            
+            album= get_tag('album', item) 
             rating = item['rating']
             if 'time' in item:
                 tm = format_time(item['time'])
@@ -734,20 +735,24 @@ class QueuePane(CursedPane):
             self.win.hline(int(i - self.beg), 0, ' ',int( self.width))
 
             width1=int((self.width-18)/2)
+            padding=0
 
             self.win.attron(curses.color_pair(2) | curses.A_BOLD)
-            self.win.addnstr(int(i - self.beg), 1, title, width1-2)
+            try:    
+                self.win.addnstr(int(i - self.beg), 0,title,len(title) )# width1-padding*2)
+            except:
+                pass
             self.win.attroff(curses.color_pair(2) | curses.A_BOLD)
 
             self.win.attron(curses.color_pair(3) | curses.A_BOLD)
             try:    
-                self.win.addnstr(int(i - self.beg), width1+1, album, width1-2)
+                self.win.addnstr(int(i - self.beg), width1+padding,album+' '*30,len(album)+30) # width1-padding)
             except:
                 pass
             self.win.attroff(curses.color_pair(3) | curses.A_BOLD)
 
 #            self.win.addnstr(int(i - self.beg),int( self.width - 16), rating * '*', 5)
-            self.win.insstr(int(i - self.beg), int(self.width )- len(tm)-3,'  '+ tm)
+            self.win.insstr(int(i - self.beg), int(self.width )- len(tm)-3,'  '+ tm+' ')
             if i == self.sel:
                 self.win.attroff(curses.A_REVERSE)
             if i == self.cur:
