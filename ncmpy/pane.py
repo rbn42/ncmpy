@@ -708,7 +708,7 @@ class QueuePane(CursedPane):
 
     def update_win(self):
         self.win.erase()
-        for i in range(self.beg, min(self.beg + self.height, self.num)):
+        for i in range(int(self.beg), int(min(self.beg + self.height, self.num))):
             item = self.queue[i]
             title = get_tag('title', item) or os.path.basename(item['file'])
             rating = item['rating']
