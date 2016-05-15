@@ -230,12 +230,8 @@ class CursedPane(BlockPane):
                     elif self._type == 'song':
                         title = get_tag('title', item) or os.path.basename(item['file'])
 
-                for encoding in 'utf8','gbk','shift-jis','big5':
-                    try:
-                        searchkey=self.main.search.decode(encoding)
-                    except:
-                        continue
-                if title.find(searchkey) != -1:
+                searchkey=self.main.search
+                if title.encode('utf8').find(searchkey) != -1:
                     has_match = True
                     if di == 1 and i <= self.sel:
                         self.board['msg'] = 'search hit BOTTOM, continuing at TOP'
