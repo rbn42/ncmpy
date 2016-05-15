@@ -59,7 +59,9 @@ class Ncmpy():
 
         # Main configuration.
         self.height, self.width = self.stdscr.getmaxyx()
-        self.tpanename = 'Queue'
+        # change to Database
+        #self.tpanename = 'Queue'
+        self.tpanename = 'Database'
         self.loop = False
         self.idle = False
         self.seek = False
@@ -214,8 +216,9 @@ class Ncmpy():
 
         # Playback control.
         elif c == ord(' '):
-            #TODO space key
-            self.mpc.pause()
+            #self.mpc.pause()
+            #disable global space key
+            pass
         elif c == ord('s'):
             self.mpc.stop()
         elif c == ord('<'):
@@ -225,9 +228,9 @@ class Ncmpy():
             self.mpc.next()
 
         # Mode control.
-        elif c == ord('u'):
-            self.status['consume'] = 1 - int(self.status['consume'])
-            self.mpc.consume(self.status['consume'])
+        #elif c == ord('u'):
+        #    self.status['consume'] = 1 - int(self.status['consume'])
+        #    self.mpc.consume(self.status['consume'])
         elif c == ord('i'):
             self.status['random'] = 1 - int(self.status['random'])
             self.mpc.random(self.status['random'])

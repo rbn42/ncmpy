@@ -56,7 +56,7 @@ def CodeFunc(Id, data):
 
     i=length-1
     while(i >= 0):
-        char = ord(data[i])
+        char = ord(data[i:i+1])
         if char >= 0x80:
             char = char - 0x100
         tmp1 = (char + tmp2) & 0x00000000FFFFFFFF
@@ -69,7 +69,7 @@ def CodeFunc(Id, data):
     i=0
     tmp1=0
     while(i<=length-1):
-        char = ord(data[i])
+        char = ord(data[i:i+1])
         if char >= 128:
             char = char - 256
         tmp7 = (char + tmp1) & 0x00000000FFFFFFFF

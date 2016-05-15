@@ -603,8 +603,16 @@ class QueuePane(CursedPane):
             self.line_up()
         elif c == ord('f'):
             self.page_down()
+        #remap key D
+        elif c == ord('d'):
+            for _ in range(5): 
+                self.line_down()
         elif c == ord('b'):
             self.page_up()
+        #remap key U
+        elif c == ord('u'):
+            for _ in range(5): 
+                self.line_up()
         elif c == ord('H'):
             self.select_top()
         elif c == ord('M'):
@@ -618,22 +626,20 @@ class QueuePane(CursedPane):
         elif c == ord('l'):
             self.locate(self.cur)
         elif c == ord('a'):
-            #TODO add all
             self.mpc.add('')
         elif c == ord('c'):
-            #TODO clear playlist
             self.mpc.clear()
             self.num = self.beg = self.sel = self.cur = 0
-        elif c == ord('d'):
-            if self.num > 0:
-                self.main.pending.append('deleteid({})'.format(self.queue[self.sel]['id']))
-                self.queue.pop(self.sel)
-                if self.sel < self.cur:
-                    self.cur -= 1
-                self.num -= 1
-                self.beg = self.clamp(self.beg)
-                self.sel = self.clamp(self.sel)
-                self.cur = self.clamp(self.cur)
+       # elif c == ord('d'):
+       #     if self.num > 0:
+       #         self.main.pending.append('deleteid({})'.format(self.queue[self.sel]['id']))
+       #         self.queue.pop(self.sel)
+       #         if self.sel < self.cur:
+       #             self.cur -= 1
+       #         self.num -= 1
+       #         self.beg = self.clamp(self.beg)
+       #         self.sel = self.clamp(self.sel)
+       #         self.cur = self.clamp(self.cur)
         elif c == ord('J'):
             if self.sel + 1 < self.num:
                 self.main.pending.append('swap({}, {})'.format(self.sel, self.sel + 1))
@@ -657,7 +663,6 @@ class QueuePane(CursedPane):
         elif c == ord('e'):
             self.mpc.shuffle()
         elif c == ord('\n'):
-            #TODO enter play
             self.mpc.playid(self.queue[self.sel]['id'])
         elif c in range(ord('1'), ord('5') + 1):
             if conf.enable_rating:
@@ -769,6 +774,14 @@ class DatabasePane(CursedPane):
             self.page_down()
         elif c == ord('b'):
             self.page_up()
+        #remap key D
+        elif c == ord('d'):
+            for _ in range(5): 
+                self.line_down()
+        #remap key U
+        elif c == ord('u'):
+            for _ in range(5): 
+                self.line_up()
         elif c == ord('H'):
             self.select_top()
         elif c == ord('M'):
@@ -790,8 +803,36 @@ class DatabasePane(CursedPane):
         elif c == ord('"'):
             self.dir = ''
             self.items = self.list_items()
+        elif c==ord(' '):
+            #clear playlist
+            self.mpc.clear()
+            #TODO database add all
+            item = self.items[self.sel]
+            if 'directory' in item:
+                uri = item['directory']
+                from ncmpy.database import add2
+                add2(uri,self.mpc)
+                #self.mpc.add(uri)
+            elif 'file' in item:
+                uri = item['file']
+                self.mpc.add(uri)
+            elif 'playlist' in item:
+                uri = item['playlist']
+                try:
+                    self.mpc.load(uri)
+                except mpd.CommandError as e:
+                    self.board['msg'] = str(e).rsplit('} ')[1]
+                else:
+                    self.board['msg'] = 'Playlist {} loaded'.format(name)
+            else:
+                #unexpected
+                a=1/0
+
+            #play next
+            self.mpc.next()
+            #self.mpc.pause(1)
+            self.mpc.play()#0)
         elif c == ord('\n'):
-            #TODO database enter play 
             item = self.items[self.sel]
             if 'directory' in item:
                 uri = item['directory']
@@ -825,7 +866,6 @@ class DatabasePane(CursedPane):
                 else:
                     self.board['msg'] = 'Playlist {} loaded'.format(name)
         elif c == ord('a'):
-            #TODO database add all
             item = self.items[self.sel]
             if 'directory' in item:
                 uri = item['directory']
@@ -835,17 +875,17 @@ class DatabasePane(CursedPane):
                 self.mpc.add(os.path.dirname(self.dir))
             else:
                 self.mpc.add(uri)
-        elif c == ord('d'):
-            item = self.items[self.sel]
-            if 'playlist' in item:
-                name = item['playlist']
-                try:
-                    self.mpc.rm(name)
-                except mpd.CommandError as e:
-                    self.board['msg'] = str(e).rsplit('} ')[1]
-                else:
-                    self.board['msg'] = 'Playlist {} deleted'.format(name)
-                    self.items = self.list_items(keeppos=True)
+        #elif c == ord('d'):
+        #    item = self.items[self.sel]
+        #    if 'playlist' in item:
+        #        name = item['playlist']
+        #        try:
+        #            self.mpc.rm(name)
+        #        except mpd.CommandError as e:
+        #            self.board['msg'] = str(e).rsplit('} ')[1]
+        #        else:
+        #            self.board['msg'] = 'Playlist {} deleted'.format(name)
+        #            self.items = self.list_items(keeppos=True)
         elif c == ord('U'):
             self.mpc.update()
         elif c in [ord('/'), ord('?'), ord('n'), ord('N')]:
@@ -882,7 +922,8 @@ class DatabasePane(CursedPane):
 
     def update_win(self):
         self.win.erase()
-        for i in range(self.beg, min(self.beg + self.height, self.num)):
+        #expect int but get float
+        for i in range(int(self.beg), int(min(self.beg + self.height, self.num))):
             item = self.items[i]
             if 'directory' in item:
                 t, uri = 'directory', item['directory']
