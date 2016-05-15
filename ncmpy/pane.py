@@ -536,9 +536,9 @@ class HelpPane(ScrollPane):
         self.num = len(self.lines)
 
     def round1(self, c):
-        if c == ord('j'):
+        if c == ord('j') or c==curses.KEY_DOWN:
             self.line_down()
-        elif c == ord('k'):
+        elif c == ord('k') or c==curses.KEY_UP:
             self.line_up()
         elif c == ord('f'):
             self.page_down()
@@ -601,9 +601,9 @@ class QueuePane(CursedPane):
         self.cur = int(self.status.get('song', 0))
 
     def round1(self, c):
-        if c == ord('j'):
+        if c == ord('j') or c==curses.KEY_DOWN:
             self.line_down()
-        elif c == ord('k'):
+        elif c == ord('k') or c==curses.KEY_UP:
             self.line_up()
         elif c == ord('f'):
             self.page_down()
@@ -781,9 +781,9 @@ class DatabasePane(CursedPane):
             self.board['msg'] = 'Database updated.'
 
     def round1(self, c):
-        if c == ord('j'):
+        if c == ord('j') or c==curses.KEY_DOWN:
             self.line_down()
-        elif c == ord('k'):
+        elif c == ord('k') or c==curses.KEY_UP:
             self.line_up()
         elif c == ord('f'):
             self.page_down()
@@ -1025,9 +1025,9 @@ class LyricsPane(ScrollPane, threading.Thread):
             self.board['msg'] = 'Lyrics saving failed.'
 
     def round1(self, c):
-        if c == ord('j'):
+        if c == ord('j') or c==curses.KEY_DOWN:
             self.line_down()
-        elif c == ord('k'):
+        elif c == ord('k') or c==curses.KEY_UP:
             self.line_up()
         elif c == ord('f'):
             self.page_down()
@@ -1198,9 +1198,9 @@ class InfoPane(ScrollPane):
                 'Songs', 'Artists', 'Albums', 'Uptime', 'Playtime', 'DB_Playtime', 'DB_Update']
 
     def round1(self, c):
-        if c == ord('j'):
+        if c == ord('j') or c==curses.KEY_DOWN:
             self.line_down()
-        elif c == ord('k'):
+        elif c == ord('k') or c==curses.KEY_UP:
             self.line_up()
         elif c == ord('f'):
             self.page_down()
@@ -1312,9 +1312,9 @@ class ArtistAlbumPane(CursedPane):
         return view
 
     def round1(self, c):
-        if c == ord('j'):
+        if c == ord('j') or c==curses.KEY_DOWN:
             self.line_down()
-        elif c == ord('k'):
+        elif c == ord('k') or c==curses.KEY_UP:
             self.line_up()
         elif c == ord('f'):
             self.page_down()
@@ -1444,9 +1444,9 @@ class SearchPane(CursedPane):
         return view
 
     def round1(self, c):
-        if c == ord('j'):
+        if c == ord('j') or c==curses.KEY_DOWN:
             self.line_down()
-        elif c == ord('k'):
+        elif c == ord('k') or c==curses.KEY_UP:
             self.line_up()
         elif c == ord('f'):
             self.page_down()
@@ -1518,9 +1518,9 @@ class OutputPane(CursedPane):
         self.sel = self.clamp(self.sel)
 
     def round1(self, c):
-        if c == ord('j'):
+        if c == ord('j') or c==curses.KEY_DOWN:
             self.line_down()
-        elif c == ord('k'):
+        elif c == ord('k') or c==curses.KEY_UP:
             self.line_up()
         elif c == ord('f'):
             self.page_down()

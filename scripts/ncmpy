@@ -78,7 +78,8 @@ class Ncmpy():
                 ord('j'), ord('k'), ord('f'), ord('b'),
                 ord('H'), ord('M'), ord('L'), ord('g'), ord('G'),
                 ord('J'), ord('K'),
-                curses.KEY_UP, curses.KEY_DOWN, curses.KEY_LEFT, curses.KEY_RIGHT,
+                #remap these keys
+                #curses.KEY_UP, curses.KEY_DOWN, curses.KEY_LEFT, curses.KEY_RIGHT,
                 ]
 
         # User input.
@@ -175,7 +176,7 @@ class Ncmpy():
 
     def round1(self, c):
         # Seeking.
-        if c in (curses.KEY_LEFT, curses.KEY_RIGHT, curses.KEY_DOWN, curses.KEY_UP):
+        if False: #remap these keys #c in (curses.KEY_LEFT, curses.KEY_RIGHT, curses.KEY_DOWN, curses.KEY_UP):
             if self.status['state'] in ['play', 'pause']:
                 if not self.seek:
                     self.seek = True
