@@ -306,7 +306,10 @@ class ProgressPane(BarPane):
             return '-' * self.width
         else:
             tm = self.status.get('time')
-            elapsed, total = tm.split(':')
+            if None==tm:
+                elapsed,total=0,0
+            else:
+                elapsed, total = tm.split(':')
             if float(total)==0:#division by zero error occurs
                 total=1
             pos = int((float(elapsed) / float(total)) * (self.width - 1))
@@ -340,7 +343,7 @@ class StatusPane(BarPane):
 
         state = self.status.get('state')
         song = self.currentsong
-        title = song and (song.get('title') or os.path.basename(song.get('file'))) or ''
+        title = song and (song.get('title') or song.get('file') and os.path.basename(song.get('file'))) or ''
         import sys
         sys.stdout.write("\x1b]2;%s\x07" % title)
         sys.stdout.flush()
@@ -577,7 +580,8 @@ class QueuePane(CursedPane):
         CursedPane.update_data(self)
 
         # Fetch playlist if version is different.
-        if self.pl_version != int(self.status['playlist']):
+
+        if self.pl_version != int(self.status.get('playlist',0)):
             self.queue = self.mpc.playlistinfo()
             self.num = len(self.queue)
             self.beg = self.clamp(self.beg)
@@ -595,7 +599,7 @@ class QueuePane(CursedPane):
                 else:
                     song['rating'] = 0
 
-            self.pl_version = int(self.status['playlist'])
+            self.pl_version = int(self.status.get('playlist',0))
 
         # self.cur = self.status.has_key('song') and int(self.status['song']) or 0
         self.cur = int(self.status.get('song', 0))
@@ -1081,6 +1085,8 @@ class LyricsPane(ScrollPane, threading.Thread):
 
         cur = 0
         tm = self.status.get('time')
+        if type(tm)==list:
+            print(tm)
         if tm:
             elapsed = int(tm.split(':')[0])
             while cur < self.num and self._ltimes[cur] <= elapsed:
@@ -1272,8 +1278,12 @@ class InfoPane(ScrollPane):
             l[6] = (l[6][0], l[6][1], format_time(l[6][2]))
         for i in range(3, 6):
             stats_list[i] = (stats_list[i][0], stats_list[i][1], format_time(stats_list[i][2]))
+        try:
+            _i=int(stats_list[6][2])
+        except:
+            _i=0
         stats_list[6] = (stats_list[6][0], stats_list[6][1], \
-                time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(stats_list[6][2]))))
+                time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(_i)))
 
         # merge into main list
         self.lines[2:10] = cp_list
