@@ -735,9 +735,9 @@ class QueuePane(CursedPane):
             if i == self.sel:
                 self.win.attron(curses.A_REVERSE)
             self.win.hline(int(i - self.beg), 0, ' ',int( self.width))
-            self.win.addnstr(i - self.beg, 0, title, self.width - 18)
-            self.win.addnstr(i - self.beg, self.width - 16, rating * '*', 5)
-            self.win.insstr(i - self.beg, self.width - len(tm), tm)
+            self.win.addnstr(int(i - self.beg), 0, title, int(self.width - 18))
+            self.win.addnstr(int(i - self.beg),int( self.width - 16), rating * '*', 5)
+            self.win.insstr(int(i - self.beg), int(self.width )- len(tm), tm)
             if i == self.sel:
                 self.win.attroff(curses.A_REVERSE)
             if i == self.cur:
