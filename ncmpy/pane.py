@@ -722,8 +722,11 @@ class QueuePane(CursedPane):
         album=None
         count_album=0
         _max=int(min(self.beg + self.height, self.num))
-        import math
-        num_width=1+int(math.log(_max,10))
+        if _max<10:
+            num_width=1
+        else:
+            import math
+            num_width=1+int(math.log(_max,10))
         num_format='%'+'%sd'%num_width
 
         for i in range(int(self.beg), _max):
