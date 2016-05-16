@@ -283,10 +283,12 @@ class Ncmpy():
         if c == curses.KEY_F1:
             self.prevtpanename = self.tpanename
             self.tpanename = 'Help'
-        elif c == curses.KEY_F2 or c==ord('1'):
+        #elif c == curses.KEY_F2 or 
+        elif c==ord('1'):
             self.prevtpanename = self.tpanename
             self.tpanename = 'Queue'
-        elif c == curses.KEY_F3 or c==ord('2'):
+        #elif c == curses.KEY_F3 or 
+        elif c==ord('2'):
             self.prevtpanename = self.tpanename
             self.tpanename = 'Database'
         elif c == curses.KEY_F4:
