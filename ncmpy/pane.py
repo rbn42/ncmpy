@@ -752,21 +752,21 @@ class QueuePane(CursedPane):
             self.win.attron(curses.color_pair(4))
             self.win.addstr(int(i - self.beg), 0,num_format%i)
 
-            self.win.attron(curses.color_pair(3))
+            self.win.attroff(curses.color_pair(3))
             try:    
-                self.win.addstr(' '+title+' '*20) 
+                self.win.addstr(' '+title+' '*60) 
             except:
                 pass
 
             self.win.attron(curses.color_pair(5))
             try:    
-                self.win.addstr(_row, width1+padding,album+' '*20)#,len(album)+30) # width1-padding)
+                self.win.addstr(_row, width1+padding,album+' '*60)#,len(album)+30) # width1-padding)
             except:
                 pass
 
             self.win.attron(curses.color_pair(6))
             try:    
-                self.win.addstr(_row,int(self.width)-len(tm)-3,' '+ tm+' '*20)
+                self.win.addstr(_row,int(self.width)-len(tm)-3,' '+ tm+' '*60)
             except:
                 pass
             #,len(tm)+2)
