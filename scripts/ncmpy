@@ -346,10 +346,7 @@ class Ncmpy():
         Return Value: Events received in idle state.
         '''
 
-        try:
-            self.mpc.noidle() # send_noidle() is not available in python-mpd2
-        except:
-            pass
+        self.mpc.noidle() # send_noidle() is not available in python-mpd2
         self.idle = False
 
         try:
@@ -413,8 +410,8 @@ class Ncmpy():
         '''Reset display. Called in SIGWINCH handler.'''
 
         #delay resizing
-        if time.time()-self.last_resize<20:
-            time.sleep(20)
+        #if time.time()-self.last_resize<20:
+        #    time.sleep(20)
         self.last_resize=time.time()
 
         curses.endwin()
