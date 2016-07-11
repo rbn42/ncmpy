@@ -857,23 +857,12 @@ class DatabasePane(CursedPane):
         elif c==ord(' '):
             #get list
             item = self.items[self.sel]
-            from ncmpy.database import add2
-            _list=add2(item,self.mpc)
-            if len(_list)>0:
-                self.mpc.clear()
-                for item in _list:
-                    if 'file' in item:
-                        self.mpc.add(item['file'])
-                    elif 'playlist' in item:
-                        try:
-                            self.mpc.load(item['playlist'])
-                        except mpd.CommandError as e:
-                            self.board['msg'] = str(e).rsplit('} ')[1]
-                        else:
-                            #self.board['msg'] = 'Playlist {} loaded'.format(name)
-                            pass
-                self.mpc.next()
-                self.mpc.play()
+            if 'file' in item:
+                path=item['file']
+            else:
+                path=item['directory']
+            os.system('~/git/mpd-script/add.sh "%s"'%path)
+
         elif c==curses.KEY_RIGHT or c==curses.KEY_BACKSPACE or c==ord('l'):
             item = self.items[self.sel]
             if 'directory' in item:
