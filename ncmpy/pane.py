@@ -857,14 +857,11 @@ class DatabasePane(CursedPane):
         elif c==ord(' '):
             #get list
             item = self.items[self.sel]
-            if 'file' in item:
-                path=item['file']
-            elif 'directory' in item:
-                path=item['directory']
-            else:
-                path=item['playlist']
-
-            cmd=('~/git/mpd-script/add.sh "%s"'%path)
+            for type_ in 'file','directory','playlist':
+                if type_ in item:
+                    path=item[type_]
+                    break
+            cmd=('~/git/mpd-script/add.sh --type=%s "%s"'%(type_,path))
             os.system(cmd)
 
         elif c==curses.KEY_RIGHT or c==curses.KEY_BACKSPACE or c==ord('l'):
