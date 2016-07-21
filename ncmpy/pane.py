@@ -859,9 +859,13 @@ class DatabasePane(CursedPane):
             item = self.items[self.sel]
             if 'file' in item:
                 path=item['file']
-            else:
+            elif 'directory' in item:
                 path=item['directory']
-            os.system('~/git/mpd-script/add.sh "%s"'%path)
+            else:
+                path=item['playlist']
+
+            cmd=('~/git/mpd-script/add.sh "%s"'%path)
+            os.system(cmd)
 
         elif c==curses.KEY_RIGHT or c==curses.KEY_BACKSPACE or c==ord('l'):
             item = self.items[self.sel]
