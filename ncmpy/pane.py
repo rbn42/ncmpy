@@ -861,7 +861,7 @@ class DatabasePane(CursedPane):
                 if type_ in item:
                     path=item[type_]
                     break
-            cmd=('~/git/mpd-script/add.sh --type=%s "%s" &'%(type_,path))
+            cmd=('~/git/mpd-script/add.sh --type=%s "%s"'%(type_,path))
             os.system(cmd)
 
         elif c==curses.KEY_RIGHT or c==curses.KEY_BACKSPACE or c==ord('l'):
